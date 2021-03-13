@@ -76,4 +76,6 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
 
 file_format = "png"
 
-generate_mask_map("Skeleton_LowRes_phong1_", metallic="MetallicSmoothness", occlusion=None, smoothness="MetallicSmoothness")
+generate_mask_map("basecolor_chandelier_4_", metallic="metallic", occlusion="occlusion", smoothness="metallic")
+generate_mask_map("glass_chandelier_4_", metallic="metallic", occlusion="occlusion", smoothness="metallic")
+generate_mask_map("lightbulb_chandelier_4_", metallic="metallic", occlusion="occlusion", smoothness="metallic")
