@@ -7,7 +7,7 @@ output_dir = "textures_output"
 
 
 def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smoothness=None,
-                      smoothness_from_metallic_alpha=True):
+                      smoothness_from_metallic_alpha=True, smoothness_is_roughness=False):
     """
     • Red: Stores the metallic map.
     • Green: Stores the ambient occlusion map.
@@ -21,10 +21,12 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
 
     if metallic is not None:
         img_metallic = Image.open(os.path.join(input_dir, f"{prefix}{metallic}.{file_format}"))
+
         if smoothness_from_metallic_alpha:
             img["R"] = Image.fromarray(np.array(img_metallic.convert("RGBA"))[:, :, 0])
         else:
-            img["R"] = Image.open(img_metallic.convert("L"))
+            img["R"] = Image.fromarray(np.array(img_metallic.convert("L")))
+
         img_zero = Image.fromarray(np.zeros_like(np.array(img["R"]))).convert("L")
     else:
         skipped.append("R")
@@ -46,7 +48,11 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
         if smoothness_from_metallic_alpha:
             img["A"] = Image.fromarray(np.array(img_smoothness.convert("RGBA"))[:, :, -1])
         else:
-            img["A"] = Image.open(img_smoothness.convert("L"))
+            img["A"] = Image.fromarray(np.array(img_smoothness.convert("L")))
+
+        if smoothness_is_roughness:
+            img["A"] = Image.fromarray(255 - np.array(img["A"]))
+
         img_zero = Image.fromarray(np.zeros_like(np.array(img["A"]))).convert("L")
     else:
         skipped.append("A")
@@ -76,6 +82,17 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
 
 file_format = "png"
 
-generate_mask_map("Table_6_", metallic="MetallRough", occlusion="AO", smoothness="MetallRough")
-generate_mask_map("Tables_2_", metallic="MetallRough", occlusion="AO", smoothness="MetallRough")
-generate_mask_map("Tables_", metallic="MetallRough", occlusion=None, smoothness="MetallRough")
+generate_mask_map("T_Medieval_female_Bottom_", metallic="metalness", occlusion="ao", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Chair_", metallic="metal", occlusion="ao", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Emroidery_", metallic="metalness", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Hairs_", metallic="metalness", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Head_", metallic="metalness", occlusion="ao", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Head_Skin2_", metallic="metalness", occlusion="ao", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("T_Medieval_female_Top_", metallic="metalness", occlusion="ao", smoothness="rough",
+                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
