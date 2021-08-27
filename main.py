@@ -1,13 +1,14 @@
 import os
 from PIL import Image
 import numpy as np
+from project_path import project_path
 
-input_dir = "textures_input"
-output_dir = "textures_output"
+input_dir = os.path.join(project_path, "Assets", "Sawed-Off Shotgun", "Textures", "Unreal")
+output_dir = input_dir
 
 
 def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smoothness=None,
-                      smoothness_from_metallic_alpha=True, smoothness_is_roughness=False):
+                      smoothness_from_metallic_alpha=True, smoothness_is_roughness=False, detail_active=False):
     """
     • Red: Stores the metallic map.
     • Green: Stores the ambient occlusion map.
@@ -67,7 +68,11 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
         if img_dim > max_size:
             max_size = img_dim
 
+    if detail_active:
+        img["B"] = Image.fromarray(255 * np.ones((max_size, max_size))).convert("L")
+
     for channel in img.keys():
+
         img_dim = img[channel].size[0]
 
         if img_dim != max_size:
@@ -82,17 +87,5 @@ def generate_mask_map(prefix, metallic=None, occlusion=None, detail=None, smooth
 
 file_format = "png"
 
-generate_mask_map("T_Medieval_female_Bottom_", metallic="metalness", occlusion="ao", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Chair_", metallic="metal", occlusion="ao", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Emroidery_", metallic="metalness", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Hairs_", metallic="metalness", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Head_", metallic="metalness", occlusion="ao", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Head_Skin2_", metallic="metalness", occlusion="ao", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
-generate_mask_map("T_Medieval_female_Top_", metallic="metalness", occlusion="ao", smoothness="rough",
-                  smoothness_from_metallic_alpha=False, smoothness_is_roughness=True)
+generate_mask_map("lambert1_", metallic="Metallic", occlusion="Mixed_AO",
+                  smoothness="Roughness", smoothness_is_roughness=True, smoothness_from_metallic_alpha=False)

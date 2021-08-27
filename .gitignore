@@ -1,3 +1,6 @@
-/textures_input
-/textures_output
+/paintings_input
+/paintings_output
+/painting_base_color
+/paintings_logs
+/project_path.py
 /.idea
